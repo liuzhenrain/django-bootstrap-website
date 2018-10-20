@@ -12,4 +12,4 @@ def ios(request):
 
 
 def update(request):
-    return render(request, "update.html")
+    return render(request, "mysite/update.html")

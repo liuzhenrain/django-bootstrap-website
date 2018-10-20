@@ -6,6 +6,6 @@ app_name = 'mysite'
 urlpatterns = [
     path("",mysite.index,name='index'),
     path('index/',mysite.index,name='index'),
-    path('ios/',mysite.index,name='ios'),
-    path('update/',mysite.index,name='update')
+    path('ios/',mysite.ios,name='ios'),
+    path('update/',mysite.update,name='update')
 ]
