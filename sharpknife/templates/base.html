@@ -8,9 +8,10 @@
     <title>MySite</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap-grid.min.css' %}" />
-    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap-reboot.min.css' %}" />
+    <!--link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap-grid.min.css' %}" / >
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap-reboot.min.css' %}" /-->
     <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/custom.min.css' %}" />
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
     {% block head %}
@@ -20,7 +21,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <a class="navbar-brand" href="/">MySite</a>
         <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
             aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,9 +42,8 @@
             <a class="btn btn-outline-success my-2 my-sm-0" href="/admin">Login</a>
         </div>
     </nav>
-    <i class="fa fa-line-chart" aria-hidden="true">{{ request.path }}</i>
     {% block body %}
-
+    
     {% endblock body %}
 
     
@@ -51,6 +51,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/Chart.bundle.min.js' %}"></script>
     <script src="{% static 'js/Chart.min.js' %}"></script>
+
 </body>
 
 </html>
