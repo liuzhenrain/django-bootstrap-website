@@ -14,7 +14,7 @@ class AppleAccountAdmin(admin.ModelAdmin):
     #     ('是否可用', {"fields":['can_use']}),
     # ]
     inlines = [AccountEventModelInline]
-    list_display = ('apple_account','small_game','used','status','create_date')
+    list_display = ('apple_account','game_name','small_game','used','status','create_date')
     list_filter = ['used']
 
 

@@ -7,13 +7,10 @@ from django.conf import settings
 
 
 class AppleAccountModel(models.Model):
-    vpn_choice_list = (
-        ('None', '不需要'),
-        ('HK-1', '香港-1')
-    )
     account_type_choice_list = (
         ('QY', '企业'),
-        ('GR', '个人')
+        ('GR', '个人'),
+        ('QYQ','企业签')
     )
     parse_type_choice_list = (
         ('None', '不做处理'),
@@ -24,13 +21,16 @@ class AppleAccountModel(models.Model):
         ('SFCL', '第三方，原包')
     )
     status_choice_list = (
-        ('NONE', '未使用'),
+        ('NONE', '未提交'),
         ('DD', '等待审核'),
         ('ZZSH', '正在审核'),
         ('CW', '错误需要处理'),
         ('GB', '过包'),
         ('BDXX', '被动下线'),
-        ('ZDXX', '主动下线')
+        ('ZDXX', '主动下线'),
+        ('SFCL','三方处理中'),
+        ('WXTS','不需要提审'),
+        ('ZZZZ','正在制作')
     )
     apple_account = models.CharField(max_length=50, unique=True)
     email_pwd = models.CharField(max_length=50)
@@ -59,10 +59,6 @@ class AppleAccountModel(models.Model):
     def __str__(self):
         return str(self.apple_account)
 
-    def get_queryset(self):
-        queryset = self.get_queryset()
-        queryset = queryset  # TODO
-        return queryset
 
     class Meta():
         verbose_name = "iOS帐号信息"

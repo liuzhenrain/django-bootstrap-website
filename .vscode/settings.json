@@ -1,3 +1,8 @@
 {
-    "python.pythonPath": "/Users/phillipliu/django-venv/bin/python"
+    
+    "python.linting.pylintArgs": [
+        "--load-plugin","pylint_django"
+    ],
+    "python.venvPath": "~/Document/Django_venv",
+    "python.pythonPath": "/Users/kaifa/Documents/Django_venv/bin/python",
 }
