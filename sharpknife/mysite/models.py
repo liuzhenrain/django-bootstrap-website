@@ -55,6 +55,7 @@ class AppleAccountModel(models.Model):
     remarks = models.TextField(null=True, blank=True, verbose_name='备注信息')
     create_date = models.DateField(
         auto_now=False, auto_now_add=True, verbose_name='帐号创建时间')
+    request_date = models.DateField(null=True,blank=True,auto_now=False,auto_now_add=False,verbose_name='申请使用时间')
 
     def __str__(self):
         return str(self.apple_account)

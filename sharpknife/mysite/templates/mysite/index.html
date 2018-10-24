@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <script src="{% static 'mysite/js/index.js' %}?t={{ timestep }}"></script>
+{% endblock head %}
+    
 
 {% block body %}
 <div class="container-fluid">
@@ -9,6 +15,19 @@
                 <p>剩余未使用帐号只剩下了 <strong>{{ unused_list.count }}</strong> 个了，需要补充</p>
         </div>
         {% endif %}
+
+        <table data-toggle="table",
+                data-search="true",
+                data-show-column="true",
+                data-minimum-count-column="4",
+                data-pagination="true",
+                data-show-pagination-switch="true",
+                data-id-field="id",
+                data-side-pagination="client",
+                data-url="{% url 'mysite:account_json' %}",
+                >
+        </table>
+
         <table class="table table-striped table-responsive-lg">
             <thead class="thead-inverse thead-dark">
                 <tr>
@@ -20,7 +39,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for account in account_list %}
+                {% for account in contacts.object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ account.apple_account }}</td>
@@ -39,24 +58,9 @@
 
                     <td>{{ account.get_status_display }}</td>
                     <td>{{ account.user.username }}</td>
-                    <td><button type="button" name="change{{ account.id }}" id="change{{ account.id }}" class="btn btn-primary btn-lg btn-block">修改状态</button></td>
+                    <td><button type="button" name="change{{ account.id }}" id="change{{ account.id }}" class="btn btn-primary btn-sm">修改状态</button></td>
                 </tr>
                 {% endfor %}
-                <tr>
-                    {% if contacts.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ contacts.previous_page_number }}">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
-                    </span>
-
-                    {% if contacts.has_next %}
-                    <a href="?page={{ contacts.next_page_number }}">next</a>
-                    <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                </tr>
             </tbody>
         </table>
     </div>
