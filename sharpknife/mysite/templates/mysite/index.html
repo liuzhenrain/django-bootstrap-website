@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block head %}
-    <script src="{% static 'mysite/js/index.js' %}?t={{ timestep }}"></script>
-{% endblock head %}
-    
-
 {% block body %}
+
+<span class="hide"> {% csrf_token %}</span>
 <div class="container-fluid">
+    
     <div class="row">
         <div class="col">
             {% if unused_list.count < 5 %} <div class="alert alert-danger" role="alert">
@@ -16,16 +14,8 @@
         </div>
         {% endif %}
 
-        <table data-toggle="table",
-                data-search="true",
-                data-show-column="true",
-                data-minimum-count-column="4",
-                data-pagination="true",
-                data-show-pagination-switch="true",
-                data-id-field="id",
-                data-side-pagination="client",
-                data-url="{% url 'mysite:account_json' %}",
-                >
+        <table id='account_table' data-url="{% url 'mysite:account_json' %}">
+            <thead class="thead-inverse table-primary"></thead>
         </table>
 
         <table class="table table-striped table-responsive-lg">
@@ -58,7 +48,7 @@
 
                     <td>{{ account.get_status_display }}</td>
                     <td>{{ account.user.username }}</td>
-                    <td><button type="button" name="change{{ account.id }}" id="change{{ account.id }}" class="btn btn-primary btn-sm">修改状态</button></td>
+                    <td><button type="button" name="change{{ account.id }}" id="change{{ account.id }}" class="btn btn-primary btn-sm disabled">修改状态</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -68,3 +58,7 @@
 </div>
 
 {% endblock body %}
+
+{% block bodyfooter %}
+<script src="{% static 'mysite/js/index.js' %}?t={{ timestep }}"></script>
+{% endblock %}

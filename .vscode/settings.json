@@ -3,6 +3,6 @@
     "python.linting.pylintArgs": [
         "--load-plugin","pylint_django"
     ],
-    "python.venvPath": "~/Document/Django_venv",
-    "python.pythonPath": "/Users/kaifa/Documents/Django_venv/bin/python",
+    "python.venvPath": "~/django-venv",
+    "python.pythonPath": "~/django-venv/bin/python",
 }

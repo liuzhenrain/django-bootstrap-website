@@ -71,13 +71,14 @@ class IndexView(BaseView):
     def used_account_json(request):
         account_list = AppleAccountModel.objects.filter(
             used = True
-        ).order_by('-upload_date')
+        ).order_by('-request_date')
         json_data={
             'total':len(account_list),
             'rows': []
         }
         for item in account_list:
             json_data['rows'].append({
+                'id':item.id,
                 'apple_account':item.apple_account,
                 'game_name':item.game_name,
                 'vpn_name':item.vpn_name,
@@ -89,6 +90,5 @@ class IndexView(BaseView):
                 'status':item.get_status_display(),
                 'user':item.user.username,
             })
-        print(json.dumps(json_data))
         return JsonResponse(json_data,safe=False)
 
