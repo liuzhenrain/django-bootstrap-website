@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-hans">
+{% load static %}
+<head>
+    <title>登录</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-flatly.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">登录</h5>
+                        <form class="form-signin" action="{% url 'mysite:login' %}" method="POST" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+                            {% csrf_token %}
+                            <div class="form-label-group">
+                                <input type="text" id="username" name="username" placeholder="用户名" required="" autofocus=""
+                                    class="form-control" />
+                                <label for="username">用户名</label></div>
+                            <div class="form-label-group">
+                                <input type="password" id="password" name="password" placeholder="密码"
+                                    required="" class="form-control" />
+                                    <label for="password">密码</label>
+                            </div>
+                            
+                            {% if request.GET.next %}
+                                <input name="next" value="{{ request.GET.next }}" type="hidden" >
+                            {% endif %}
+                                
+                            <button type="submit" class="btn btn-lg btn-primary btn-block">登录</button>
+                            <hr class="my-4" />
+                        </form>
+                        {% if error %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+                                <strong>错误!</strong> {{ error }}
+                            </div>
+                        {% endif %}
+                            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+
+</html>

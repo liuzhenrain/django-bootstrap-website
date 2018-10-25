@@ -19,5 +19,5 @@ from mysite import views
 
 urlpatterns = [
     path("",include('mysite.urls')),
-    path('admin/', admin.site.urls,name='login'),
+    path('admin/', admin.site.urls,name='admin'),
 ]
