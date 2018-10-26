@@ -11,4 +11,6 @@ urlpatterns = [
     path('account_json/',mysite.IndexView.used_account_json,name='account_json'),
     path('login/',mysite.IndexView.login,name='login'),
     path('logout/',mysite.IndexView.logout,name='logout'),
+    path('account_modify/',mysite.IndexView.account_modify,name='account_modify'),
+    path('account_choice_info/',mysite.IndexView.account_choice_info,name='account_choice_info'),
 ]

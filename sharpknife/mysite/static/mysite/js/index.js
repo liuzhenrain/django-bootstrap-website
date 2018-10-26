@@ -4,97 +4,13 @@ $(function () {
         striped: 'true',
         cache: 'false',
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 12,
         pagination: true,
         sidePagination: 'client',
+        showPaginationSwitch:false,
         showRefresh: true,
         showColumns: true,
         search: true,
-        columns: [{
-                field: 'apple_account',
-                title: '苹果帐号',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'true'
-            },
-            {
-                field: 'game_name',
-                title: '游戏名称',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-            },
-            {
-                field: 'vpn_name',
-                title: 'VPN',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'true'
-            },
-            {
-                field: 'account_type',
-                title: '帐号类型',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'true'
-            },
-            {
-                field: 'use_device',
-                title: '使用设备',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'true'
-            },
-            {
-                field: 'upload_date',
-                title: '提审时间',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'true'
-            },
-            {
-                field: 'parse_type',
-                title: '处理方式',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'true'
-            },
-            {
-                field: 'small_game',
-                title: '小游戏',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'false'
-            },
-            {
-                field: 'status',
-                title: '当前状态',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'true'
-            },
-            {
-                field: 'user',
-                title: '使用者',
-                align: 'center',
-                halign: 'center',
-                valign: 'left',
-                sortable: 'true'
-            }, {
-                field: 'operate',
-                align: 'center',
-                formatter: operateFormatter,
-                events:operateEvents,
-            }
-        ],
         responseHandler: function (res) {
             console.log(res)
             return res['rows']
@@ -112,6 +28,46 @@ function operateFormatter(value, row, index) {
 
 window.operateEvents = {
     'click #account_md':function(e,value,row,index){
-        console.log(e,value,row,index)
+        $('#account_modify_modal #id').val(row.id)
+        $('#account_modify_modal #apple_account').val(row.apple_account)
+        $('#account_modify_modal #game_name').val(row.game_name)
+        $('#account_modify_modal #vpn_name').val(row.vpn_name)
+        $('#account_modify_modal #account_type').attr('value',row.account_type)
+        $('#account_modify_modal #use_device').val(row.use_device)
+        $('#account_modify_modal #upload_date').val(row.upload_date)
+        // $('#account_modify_modal #parse_type').val(row.parse_type)
+        $('#account_modify_modal #small_game').attr('value',row.small_game)// .val(row.small_game)
+        // $('#account_modify_modal #status').val(row.status)
+        $('#account_modify_modal #user').val(row.user)
+        $.ajax({
+            type: "get",
+            url: "/account_choice_info",
+            data: {},
+            dataType: "json",
+            success: function (response) {
+                for (let index = 0; index < response.parse_type_choice.length; index++) {
+                    const element = response.parse_type_choice[index];
+                    console.log(element,element[0],element[1])
+                    let value = ""
+                    if (element[0] == row.parse_type){
+                        value = "<option value='{0}' selected>{1}</option>".format(element)
+                    }else{
+                        value = "<option value='{0}'>{1}</option>".format(element)
+                    }
+                    console.log("value:",value)
+                    $(value).appendTo('#account_modify_modal #parse_type')
+                }
+                for (let index = 0; index < response.status_choice.length; index++) {
+                    const element = response.status_choice[index];
+                    let value = ""
+                    if (element[0] == row.status) {
+                        value = "<option value='{0}' selected>{1}</option>".format(element)
+                    } else {
+                        value = "<option value='{0}'>{1}</option>".format(element)
+                    }                   
+                    $(value).appendTo('#account_modify_modal #status')
+                }
+            },
+        });
     }
 }

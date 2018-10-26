@@ -18,7 +18,7 @@ class AppleAccountModel(models.Model):
         ('HX', '混淆1.0'),
         ('HX2', '混淆2.0'),
         ('JG', '加固'),
-        ('SFJG', '第三方加固，混淆2.0'),
+        ('SFJG', '第三方，混淆2.0'),
         ('SFCL', '第三方，原包')
     )
     status_choice_list = (

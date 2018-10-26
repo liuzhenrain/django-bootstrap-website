@@ -131,6 +131,17 @@ class IndexView(BaseView):
                 return render(request,'mysite/login.html',context=context)
     
     def logout(request):
-        auth.logout(request);
+        auth.logout(request)
         return redirect("/")
+
+    def account_modify(request):
+        pass
+
+    def account_choice_info(request):
+        context = {
+            'parse_type_choice':AppleAccountModel.parse_type_choice_list,
+            'status_choice':AppleAccountModel.status_choice_list,
+        }
+        return JsonResponse(context,safe=False)
+
 
