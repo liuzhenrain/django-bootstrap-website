@@ -4,7 +4,7 @@ $(function () {
         striped: 'true',
         cache: 'false',
         pageNumber: 1,
-        pageSize: 12,
+        pageSize: 10,
         pagination: true,
         sidePagination: 'client',
         showPaginationSwitch:false,
@@ -70,4 +70,8 @@ window.operateEvents = {
             },
         });
     }
+}
+
+function refreshTable() {
+    $('#account_table').bootstrapTable('refresh')
 }

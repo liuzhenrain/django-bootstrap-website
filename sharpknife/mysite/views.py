@@ -135,7 +135,35 @@ class IndexView(BaseView):
         return redirect("/")
 
     def account_modify(request):
-        pass
+        account_id = request.POST.get('id')
+        game_name = request.POST.get('game_name')
+        vpn_name = request.POST.get('vpn_name')
+        use_device = request.POST.get('use_device')
+        upload_date = request.POST.get('upload_date')
+        parse_type = request.POST.get('parse_type')
+        small_game = request.POST.get('small_game')
+        status = request.POST.get('status')
+
+        item_model = AppleAccountModel.objects.get(id=account_id)
+        try:
+            # item_model.update(game_name=game_name,vpn_name=vpn_name,use_device=use_device,upload_date=upload_date,parse_type=parse_type,small_game=small_game,status = status)
+            item_model.game_name = game_name
+            item_model.vpn_name = vpn_name
+            item_model.use_device = use_device
+            if not upload_date.strip() == "":
+                item_model.upload_date = upload_date
+            item_model.parse_type = parse_type
+            item_model.small_game = small_game
+            item_model.status = status
+            item_model.save()
+            return redirect("/")
+        except Exception as e:
+            print(e)
+            context = {
+                'error':'出现错误，无法进行修改',
+                'exception':e.__str__(),
+            }
+            return JsonResponse(context,safe=False)
 
     def account_choice_info(request):
         context = {
@@ -143,5 +171,39 @@ class IndexView(BaseView):
             'status_choice':AppleAccountModel.status_choice_list,
         }
         return JsonResponse(context,safe=False)
+
+    def get_account_unused(request):
+        account_list = AppleAccountModel.objects.filter(
+            used=False).order_by('-create_date')
+        json_data = {
+            'total': len(account_list),
+            'rows': []
+        }
+        for item in account_list:
+            json_data['rows'].append({
+                'id': item.id,
+                'apple_account': item.apple_account,
+                'account_type': item.get_account_type_display(),
+            })
+        return JsonResponse(json_data, safe=False)
+
+    def request_account(request):
+        if request.method == 'POST':
+            account_id = request.POST.get('id')
+            if not account_id.strip() == "":
+                account = AppleAccountModel.objects.get(id=account_id)
+                if account:
+                    # account.used = True
+                    success = {
+                        'apple_account':account.apple_account,
+                        'email_pwd':account.email_pwd,
+                        'apple_pwd':account.apple_pwd,
+                    }
+                    return JsonResponse({'success':success},safe=False)
+                else:
+                    return JsonResponse({'error':'没有该帐号信息'},safe=False)
+        else:
+            return JsonResponse({'error':"获取失败"},safe=False)
+            
 
 

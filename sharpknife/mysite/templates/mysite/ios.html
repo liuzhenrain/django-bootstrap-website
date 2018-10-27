@@ -1,27 +1,121 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block body %}
-<h1>这是IOS提包相关的界面</h1>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-        打开模态框
-      </button>
-<div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-lg" role="document">
+<h4>帐号申请</h4>
+<table id='account_unused_table' data-url="{% url 'mysite:get_account_unused' %}"></table>
+
+<!-- Modal -->
+<div class="modal  fade" id="request_modal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+                <h4 class="modal-title" id="modelTitleId">申请成功</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <p>Modal body text goes here.</p>
+            <div class="modal-body" id="modal_content">
+                <div class="form-group row">
+                    <label for="apple_account" class="col-sm-4 col-form-label">Apple Account:</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly="" class="form-control-plaintext" id="apple_account" value="12345678987@example.com">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="email_pwd" class="col-sm-4 col-form-label">Apple Account:</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly="" class="form-control-plaintext" id="email_pwd" value="12345678987@example.com">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="apple_pwd" class="col-sm-4 col-form-label">Apple Account:</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly="" class="form-control-plaintext" id="apple_pwd" value="12345678987@example.com">
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
             </div>
         </div>
     </div>
 </div>
 {% endblock body %}
+
+
+{% block bodyfooter %}
+<script>
+    $(function () {
+        $("#account_unused_table").bootstrapTable({
+            striped: true,
+            cache: false,
+            showRefresh: true,
+            search: true,
+            sortable: false,
+
+            dataType: 'json',
+            columns: [{
+                field: 'apple_account',
+                title: '苹果帐号',
+                align: 'center',
+            }, {
+                field: 'account_type',
+                title: '帐号类型',
+                align: 'center',
+            }, {
+                field: 'operate',
+                align: 'center',
+                formatter: operateFormatter,
+                events:operateEvent,
+            }],
+            responseHandler: function (res) {
+                return res['rows']
+            }
+        })
+        $('#request_modal').dialog({
+            autoOpen:false,
+            modal:true,
+            title:"申请帐号成功",
+            buttons:{
+                Close:function(){
+                    $(this).dialog('close')
+                }
+            }
+
+        })
+    })
+
+    function operateFormatter(value, row, index) {
+        return [
+            "<a class='btn btn-success text-white' id='operate'>申请帐号</a>"
+        ].join('')
+    }
+    window.operateEvent = {
+        "click #operate": function (e, value, row, index) {
+            account_id = row.id
+            $.ajax({
+                type: "post",
+                url: "{% url 'mysite:request_account' %}",
+                data: {
+                    id:account_id,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                dataType: "json",
+                success: function (response) {
+                    if (response['success']) {
+                        const valueDic = response['success']
+                        // $('#modal_content #apple_account').val(valueDic.apple_account)
+                        // $('#modal_content #email_pwd').val(valueDic.email_pwd)
+                        // $('#modal_content #apple_pwd').val(valueDic.apple_pwd)
+                        // jQuery("#request_modal").modal({show:true});
+                        $('#request_modal').html(JSON.stringify(valueDic))
+                        $('#request_modal').dialog('open')
+                    } else {
+                        alert("请求失败:" + response['error'])
+                    }
+                }
+            });
+        }
+    }
+</script>
+{% endblock bodyfooter %}
