@@ -92,8 +92,8 @@ class IndexView(BaseView):
                 'account_type': item.get_account_type_display(),
                 'use_device': item.use_device,
                 'upload_date': item.upload_date.strftime('%Y-%m-%d') if item.upload_date != None else "",
-                'parse_type': item.get_account_type_display(),
-                'small_game': item.small_game,
+                'parse_type': item.get_parse_type_display(),
+                'small_game': '是' if item.small_game else '否',
                 'status': item.get_status_display(),
                 'user': item.user.username,
             })
@@ -193,7 +193,11 @@ class IndexView(BaseView):
             if not account_id.strip() == "":
                 account = AppleAccountModel.objects.get(id=account_id)
                 if account:
-                    # account.used = True
+                    account.used = True
+                    account.request_date = timezone.localdate()
+                    account.user = request.user
+                    account.save()
+                    # print('localdate',timezone.localdate())
                     success = {
                         'apple_account':account.apple_account,
                         'email_pwd':account.email_pwd,

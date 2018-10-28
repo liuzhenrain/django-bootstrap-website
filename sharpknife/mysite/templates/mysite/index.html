@@ -1,11 +1,20 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
 {% block body %}
 
 <div class="container-fluid">
-
+    <div class="row">
+        <div class="col-md-4">
+            <canvas id="myChart1"></canvas>
+        </div>
+        <div class="col-md-4">
+            <canvas id="myChart2"></canvas>
+        </div>
+        <div class="col-md-4">
+            <canvas id="myChart3"></canvas>
+        </div>
+    </div>
     <div class="row">
         <div class="col">
             {% if unused_list.count < 5 %} <div class="alert alert-danger" role="alert">
@@ -15,7 +24,7 @@
         {% endif %}
 
         <table id='account_table' data-url="{% url 'mysite:account_json' %}">
-            <thead class="thead-inverse table-primary">
+            <thead class="thead-inverse table-dark">
                 <tr>
                     <th data-field="apple_account" data-title="苹果帐号" data-align="center" data-sortable="false"></th>
                     <th data-field="game_name" data-title="游戏名称" data-align="center" data-sortable="false"></th>
@@ -40,7 +49,7 @@
 <div class="modal fade" id="account_modify_modal">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
-                
+
             <form action="{% url 'mysite:account_modify' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" id="id" name="id">
@@ -103,27 +112,23 @@
                             </select>
                         </div>
                     </div>
-                    <div class="mb-1 d-flex justify-content-between">
-                        <div class="form-inline ">
-                            <label for="status">当前状态</label>
-                            <select class="form-control" name="status" id="status">
+                    <div class="form-inline mb-1 d-flex justify-content-between">
+                        <label for="status">当前状态</label>
+                        <select class="form-control" name="status" id="status">
 
-                            </select>
-                        </div>
+                        </select>
                     </div>
-                    <div class="mb-1 d-flex justify-content-between">
-                        <div class="form-inline ">
-                            <label for="user">使用者: </label>
-                            <input type="text" name="user" id="user" class="form-control" placeholder="" disabled>
-                        </div>
+                    <div class="form-inline mb-1 d-flex justify-content-between">
+                        <label for="user">使用者: </label>
+                        <input type="text" name="user" id="user" class="form-control" placeholder="" disabled>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="submit" class="btn btn-primary" id="save_account_btn">保存</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
                 <div>
-                    
+
                 </div>
             </form>
         </div>
