@@ -9,6 +9,7 @@ from django.contrib import auth
 
 # Create your views here.
 from .models import AppleAccountModel, AccountEventModel
+import json
 
 
 def index(request):
@@ -49,6 +50,19 @@ def update(request):
 
 class BaseView(object):
     timestep = timezone.now()
+
+chartColors=[
+    'rgb(255, 99, 132)',    # red
+	'rgb(255, 159, 64)',    # orange
+	'rgb(255, 205, 86)',    # yellow
+	'rgb(75, 192, 192)',    # green
+	'rgb(54, 162, 235)',    # blue
+	'rgb(153, 102, 255)',   # purple
+	'rgb(201, 203, 207)',   # grey
+    'rgb(102, 16, 242)',    # indigo
+    'rgb(32, 201, 151)',    # teal
+    'rgb(91, 192, 222)',    # cyan
+]
 
 
 class IndexView(BaseView):
@@ -152,6 +166,8 @@ class IndexView(BaseView):
             item_model.use_device = use_device
             if not upload_date.strip() == "":
                 item_model.upload_date = upload_date
+            else:
+                item_model.upload_date = None
             item_model.parse_type = parse_type
             item_model.small_game = small_game
             item_model.status = status
@@ -209,5 +225,60 @@ class IndexView(BaseView):
         else:
             return JsonResponse({'error':"获取失败"},safe=False)
             
+    
+    def get_charts_json(request):
+        all_account = AppleAccountModel.objects.all().filter(used=True)
+        has_upload = all_account.exclude(upload_date=None)
+        status_dic = {
+            "labels":[],
+            'datasets':[],
+        }
+        status_charts_data=[]
+        for item in has_upload:
+            astatus = item.get_status_display()
+            if not astatus in status_dic['labels']:
+                status_dic['labels'].append(astatus)
+
+        for status_name in status_dic['labels']:
+            count = 0
+            for item in has_upload:
+                if item.get_status_display() == status_name:
+                    count+=1
+            status_charts_data.append(count)
+
+        backgroundColors = chartColors[:len(status_charts_data)]
+        upload_dataset = {
+            'data':status_charts_data,
+            'backgroundColor':backgroundColors,
+        }
+        status_dic['datasets'].append(upload_dataset)
+
+        account_dic = {
+            "labels":[],
+            'datasets':[],
+        }
+        account_charts_data=[]
+        for item in has_upload:
+            username = item.user.username
+            if not username in account_dic['labels']:
+                account_dic['labels'].append(username)
+        
+        for username in account_dic['labels']:
+            count = 0
+            for item in has_upload:
+                if item.user.username == username:
+                    count+=1
+            account_charts_data.append(count)
+
+        backgroundColors = chartColors[:len(account_charts_data)]
+        account_dataset = {
+            'data':account_charts_data,
+            'backgroundColor':backgroundColors,
+        }
+        account_dic['datasets'].append(account_dataset)
+
+        # print(json.dumps(status_dic))
+        return JsonResponse({'status_dic':status_dic,'user_dic':account_dic},safe=False)
+
 
 

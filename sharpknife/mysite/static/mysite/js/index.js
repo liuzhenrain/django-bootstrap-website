@@ -1,3 +1,20 @@
+var chartConfig = {
+    type: 'pie',
+    data: {
+        datasets: [{
+            data: [],
+            backgroundColor: [],
+            label: "",
+        }],
+        labels: [],
+    },
+    options: {
+        responsive: true,
+    }
+}
+
+Chart.defaults.global.animation.duration = 500
+
 $(function () {
     $('#account_table').bootstrapTable({
         height: 620,
@@ -16,30 +33,59 @@ $(function () {
             return res['rows']
         }
     })
-
-    // Chartjs Test
-    for (let index = 1; index < 4; index++) {
-        var ctx = document.getElementById('myChart'+index).getContext('2d');
-        var chart = new Chart(ctx, {
-            // The type of chart we want to create
-            type: 'bar',
-
-            // The data for our dataset
-            data: {
-                labels: ["January", "February", "March", "April", "May", "June", "July"],
-                datasets: [{
-                    label: "My First dataset",
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: [10, 10, 5, 2, 20, 30, 45],
-                }]
-            },
-
-            // Configuration options go here
-            options: {}
-        });
-    }
-
+    $.getJSON("/get_charts_json", {},
+        function (data, textStatus, jqXHR) {
+            console.log(data, textStatus, jqXHR)
+            let status_ctx = document.getElementById('account_status_chart').getContext('2d') // $('#account_status_chart').getContext('2d')
+            chartConfig.data.datasets = data.status_dic.datasets
+            chartConfig.data.labels = data.status_dic.labels
+            window.statusChart = new Chart(status_ctx, chartConfig);
+            window.statusChart.update()
+            console.log(JSON.stringify(data.user_dic))
+            let user_ctx = document.getElementById('account_user_chart').getContext('2d') // $('#account_status_chart').getContext('2d')
+            let user_config = {
+                type: 'bar',
+                data: {
+                    datasets: [{
+                        data: data.user_dic.datasets[0].data,
+                        backgroundColor: data.user_dic.datasets[0].backgroundColor,
+                        label: "提包数量",
+                    }],
+                    labels: data.user_dic.labels,
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                            }
+                        }]
+                    },
+                    animation:{
+                        duration:500,
+                        onComplete:function(){
+                            let charInstance = this.chart;
+                            let ctx = charInstance.ctx
+                            ctx.textAlign = 'center'
+                            ctx.textBaseline = 'bottom';
+                            this.data.datasets.forEach(function(dataset,i){
+                                let meta = charInstance.controller.getDatasetMeta(i)
+                                meta.data.forEach(function(bar,index){
+                                    let data = dataset.data[index]
+                                    ctx.fillText(data,bar._model.x,bar._model.y-5)
+                                })
+                            })
+                        }
+                    }
+                }
+            }
+            console.log(JSON.stringify(user_config))
+            console.log(JSON.stringify(data.user_dic.datasets.data))
+            window.userChart = new Chart(user_ctx, user_config);
+            window.userChart.update()
+        }
+    );
 })
 
 function operateFormatter(value, row, index) {

@@ -5,46 +5,48 @@
 
 <div class="container-fluid">
     <div class="row">
+            {% if unused_list.count < 5 %} 
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">帐号稀缺</h4>
+                <p>剩余未使用帐号只剩下了 <strong>{{ unused_list.count }}</strong> 个了，需要补充</p>
+            </div>
+            {% endif %}
+    </div>
+    <div class="row">
         <div class="col-md-4">
-            <canvas id="myChart1"></canvas>
+            <canvas id="account_status_chart"></canvas>
         </div>
         <div class="col-md-4">
-            <canvas id="myChart2"></canvas>
+            <canvas id="account_user_chart"></canvas>
         </div>
         <div class="col-md-4">
-            <canvas id="myChart3"></canvas>
+                <canvas id="myChart"></canvas>
+                
         </div>
     </div>
     <div class="row">
         <div class="col">
-            {% if unused_list.count < 5 %} <div class="alert alert-danger" role="alert">
-                <h4 class="alert-heading">帐号稀缺</h4>
-                <p>剩余未使用帐号只剩下了 <strong>{{ unused_list.count }}</strong> 个了，需要补充</p>
+            <table id='account_table' data-url="{% url 'mysite:account_json' %}">
+                <thead class="thead-inverse table-dark">
+                    <tr>
+                        <th data-field="apple_account" data-title="苹果帐号" data-align="center" data-sortable="false"></th>
+                        <th data-field="game_name" data-title="游戏名称" data-align="center" data-sortable="false"></th>
+                        <th data-field="vpn_name" data-title="VPN" data-align="center" data-sortable="false"></th>
+                        <th data-field="account_type" data-title="帐号类型" data-align="center" data-sortable="false"></th>
+                        <th data-field="use_device" data-title="使用设备" data-align="center" data-sortable="false"></th>
+                        <th data-field="upload_date" data-title="提审时间" data-align="center" data-sortable="false"></th>
+                        <th data-field="parse_type" data-title="处理方式" data-align="center" data-sortable="false"></th>
+                        <th data-field="small_game" data-title="小游戏" data-align="center" data-sortable="false"></th>
+                        <th data-field="status" data-title="当前状态" data-align="center" data-sortable="false"></th>
+                        <th data-field="user" data-title="使用者" data-align="center" data-sortable="false"></th>
+                        {% if request.user.is_authenticated %}
+                        <th data-field="operate" data-title="" data-align="center" data-sortable="false" data-formatter="operateFormatter"
+                            data-events="operateEvents"></th>
+                        {% endif %}
+                    </tr>
+                </thead>
+            </table>
         </div>
-        {% endif %}
-
-        <table id='account_table' data-url="{% url 'mysite:account_json' %}">
-            <thead class="thead-inverse table-dark">
-                <tr>
-                    <th data-field="apple_account" data-title="苹果帐号" data-align="center" data-sortable="false"></th>
-                    <th data-field="game_name" data-title="游戏名称" data-align="center" data-sortable="false"></th>
-                    <th data-field="vpn_name" data-title="VPN" data-align="center" data-sortable="false"></th>
-                    <th data-field="account_type" data-title="帐号类型" data-align="center" data-sortable="false"></th>
-                    <th data-field="use_device" data-title="使用设备" data-align="center" data-sortable="false"></th>
-                    <th data-field="upload_date" data-title="提审时间" data-align="center" data-sortable="false"></th>
-                    <th data-field="parse_type" data-title="处理方式" data-align="center" data-sortable="false"></th>
-                    <th data-field="small_game" data-title="小游戏" data-align="center" data-sortable="false"></th>
-                    <th data-field="status" data-title="当前状态" data-align="center" data-sortable="false"></th>
-                    <th data-field="user" data-title="使用者" data-align="center" data-sortable="false"></th>
-                    {% if request.user.is_authenticated %}
-                    <th data-field="operate" data-title="" data-align="center" data-sortable="false" data-formatter="operateFormatter"
-                        data-events="operateEvents"></th>
-                    {% endif %}
-                </tr>
-            </thead>
-        </table>
-
-    </div>
 </div>
 <div class="modal fade" id="account_modify_modal">
     <div class="modal-dialog modal-sm" role="document">
@@ -138,5 +140,9 @@
 {% endblock body %}
 
 {% block bodyfooter %}
+<!-- ?t={{ timestep }} -->
 <script src="{% static 'mysite/js/index.js' %}?t={{ timestep }}"></script>
+<script>
+        
+        </script>
 {% endblock %}

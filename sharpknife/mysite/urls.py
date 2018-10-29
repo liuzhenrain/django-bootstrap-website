@@ -15,4 +15,5 @@ urlpatterns = [
     path('account_choice_info/',mysite.IndexView.account_choice_info,name='account_choice_info'),
     path('get_account_unused/',mysite.IndexView.get_account_unused,name='get_account_unused'),
     path('request_account/',mysite.IndexView.request_account,name='request_account'),
+    path('get_charts_json/',mysite.IndexView.get_charts_json,name='get_charts_json')
 ]
