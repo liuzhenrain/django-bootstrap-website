@@ -5,12 +5,14 @@
 
 <div class="container-fluid">
     <div class="row">
-            {% if unused_list.count < 5 %} 
-            <div class="alert alert-danger" role="alert">
-                <h4 class="alert-heading">帐号稀缺</h4>
-                <p>剩余未使用帐号只剩下了 <strong>{{ unused_list.count }}</strong> 个了，需要补充</p>
-            </div>
-            {% endif %}
+        <div class="col-sm-12">
+                {% if unused_list.count < 5 %} 
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">帐号稀缺</h4>
+                    <p>剩余未使用帐号只剩下了 <strong>{{ unused_list.count }}</strong> 个了，需要补充</p>
+                </div>
+                {% endif %}
+        </div>
     </div>
     <div class="row">
         <div class="col-md-4">

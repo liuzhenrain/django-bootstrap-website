@@ -37,6 +37,7 @@ def index(request):
     }
     return render(request, "mysite/index.html", context=context)
 
+
 @login_required
 def ios(request):
     # print(request.user.is_authenticated)
@@ -53,14 +54,15 @@ def update(request):
 class BaseView(object):
     timestep = timezone.now()
 
-chartColors=[
+
+chartColors = [
     'rgb(255, 99, 132)',    # red
-	'rgb(255, 159, 64)',    # orange
-	'rgb(255, 205, 86)',    # yellow
-	'rgb(75, 192, 192)',    # green
-	'rgb(54, 162, 235)',    # blue
-	'rgb(153, 102, 255)',   # purple
-	'rgb(201, 203, 207)',   # grey
+    'rgb(255, 159, 64)',    # orange
+    'rgb(255, 205, 86)',    # yellow
+    'rgb(75, 192, 192)',    # green
+    'rgb(54, 162, 235)',    # blue
+    'rgb(153, 102, 255)',   # purple
+    'rgb(201, 203, 207)',   # grey
     'rgb(102, 16, 242)',    # indigo
     'rgb(32, 201, 151)',    # teal
     'rgb(91, 192, 222)',    # cyan
@@ -118,34 +120,35 @@ class IndexView(BaseView):
     def login(request):
         if request.method == 'GET':
             context = {
-                'from_page':request.get_full_path,
+                'from_page': request.get_full_path,
             }
-            return render(request,'mysite/login.html',context=context)
+            return render(request, 'mysite/login.html', context=context)
         else:
             try:
                 username = request.POST.get('username')
                 password = request.POST.get('password')
-                user = auth.authenticate(request=request,username=username,password=password)
+                user = auth.authenticate(
+                    request=request, username=username, password=password)
                 if user is not None:
-                    auth.login(request,user)
+                    auth.login(request, user)
                     if request.POST.get('next'):
                         nextpath = request.POST.get('next')
                         return redirect(nextpath)
                     else:
                         if user.is_staff:
                             return redirect('/admin')
-                        return render(request,'mysite/index.html')
+                        return render(request, 'mysite/index.html')
                 else:
                     context = {
-                        'error':'登录失败，请重试'
+                        'error': '登录失败，请重试'
                     }
-                    return render(request,'mysite/login.html',context=context)
+                    return render(request, 'mysite/login.html', context=context)
             except KeyError as identifier:
                 context = {
-                    'error':'登录失败，请重试'
+                    'error': '登录失败，请重试'
                 }
-                return render(request,'mysite/login.html',context=context)
-    
+                return render(request, 'mysite/login.html', context=context)
+
     def logout(request):
         auth.logout(request)
         return redirect("/")
@@ -178,17 +181,17 @@ class IndexView(BaseView):
         except Exception as e:
             print(e)
             context = {
-                'error':'出现错误，无法进行修改',
-                'exception':e.__str__(),
+                'error': '出现错误，无法进行修改',
+                'exception': e.__str__(),
             }
-            return JsonResponse(context,safe=False)
+            return JsonResponse(context, safe=False)
 
     def account_choice_info(request):
         context = {
-            'parse_type_choice':AppleAccountModel.parse_type_choice_list,
-            'status_choice':AppleAccountModel.status_choice_list,
+            'parse_type_choice': AppleAccountModel.parse_type_choice_list,
+            'status_choice': AppleAccountModel.status_choice_list,
         }
-        return JsonResponse(context,safe=False)
+        return JsonResponse(context, safe=False)
 
     def get_account_unused(request):
         account_list = AppleAccountModel.objects.filter(
@@ -217,26 +220,26 @@ class IndexView(BaseView):
                     account.save()
                     # print('localdate',timezone.localdate())
                     success = {
-                        'apple_account':account.apple_account,
-                        'email_pwd':account.email_pwd,
-                        'apple_pwd':account.apple_pwd,
+                        'apple_account': account.apple_account,
+                        'email_pwd': account.email_pwd,
+                        'apple_pwd': account.apple_pwd,
                     }
-                    return JsonResponse({'success':success},safe=False)
+                    return JsonResponse({'success': success}, safe=False)
                 else:
-                    return JsonResponse({'error':'没有该帐号信息'},safe=False)
+                    return JsonResponse({'error': '没有该帐号信息'}, safe=False)
         else:
-            return JsonResponse({'error':"获取失败"},safe=False)
-            
-    
+            return JsonResponse({'error': "获取失败"}, safe=False)
+
     def get_charts_json(request):
-        all_account = AppleAccountModel.objects.all().filter(used=True)
-        has_upload = all_account.exclude(upload_date=None)
+        # all_account = AppleAccountModel.objects.filter(used=True)
+        has_upload = AppleAccountModel.objects.filter(
+            used=True).exclude(upload_date__isnull=True)
         # 根据状态区分
         status_dic = {
-            "labels":[],
-            'datasets':[],
+            "labels": [],
+            'datasets': [],
         }
-        status_charts_data=[]
+        status_charts_data = []
         for item in has_upload:
             astatus = item.get_status_display()
             if not astatus in status_dic['labels']:
@@ -246,60 +249,78 @@ class IndexView(BaseView):
             count = 0
             for item in has_upload:
                 if item.get_status_display() == status_name:
-                    count+=1
+                    count += 1
             status_charts_data.append(count)
 
-        backgroundColors = chartColors[:len(status_charts_data)]
+        # backgroundColors = chartColors[:len(status_charts_data)]
+        if status_charts_data.__len__() <= chartColors.__len__():
+            backgroundColors = chartColors[:len(status_charts_data)]
+        else:
+            backgroundColors = chartColors
+            for i in range(0, status_charts_data.__len__()-chartColors.__len__()):
+                backgroundColors.append(chartColors[i])
+
         upload_dataset = {
-            'data':status_charts_data,
-            'backgroundColor':backgroundColors,
+            'data': status_charts_data,
+            'backgroundColor': backgroundColors,
         }
         status_dic['datasets'].append(upload_dataset)
         # 根据用户区分
         account_dic = {
-            "labels":[],
-            'datasets':[],
+            "labels": [],
+            'datasets': [],
         }
-        account_charts_data=[]
+        account_charts_data = []
         for item in has_upload:
             username = item.user.username
             if not username in account_dic['labels']:
                 account_dic['labels'].append(username)
-        
+
         for username in account_dic['labels']:
             count = 0
             for item in has_upload:
                 if item.user.username == username:
-                    count+=1
+                    count += 1
             account_charts_data.append(count)
 
-        backgroundColors = chartColors[:len(account_charts_data)]
+        # backgroundColors = chartColors[:len(account_charts_data)]
+
+        if account_charts_data.__len__() <= chartColors.__len__():
+            backgroundColors = chartColors[:len(account_charts_data)]
+        else:
+            backgroundColors = chartColors
+            for i in range(0, account_charts_data.__len__()-chartColors.__len__()):
+                backgroundColors.append(chartColors[i])
+
         account_dataset = {
-            'data':account_charts_data,
-            'backgroundColor':backgroundColors,
+            'data': account_charts_data,
+            'backgroundColor': backgroundColors,
         }
         account_dic['datasets'].append(account_dataset)
 
         # 根据每周划分
-        week_data = has_upload.annotate(week=TruncWeek('upload_date')).values('week').annotate(c=Count('id')).order_by()
+        week_data = has_upload.annotate(week=TruncWeek('upload_date')).values(
+            'week').annotate(c=Count('id')).order_by()
         week_dic = {
-            'labels':[],
-            'datasets':[],
+            'labels': [],
+            'datasets': [],
         }
-        week_charts_data=[]
+        week_charts_data = []
         for item in week_data:
             week_dic['labels'].append(item['week'].__str__())
             week_charts_data.append(item['c'])
-        
-        backgroundColors = chartColors[:len(week_charts_data)]
-        week_dataset={
-            'data':week_charts_data,
-            'backgroundColor':backgroundColors,
+        if week_charts_data.__len__() <= chartColors.__len__():
+            backgroundColors = chartColors[:len(week_charts_data)]
+        else:
+            backgroundColors = chartColors
+            for i in range(0, week_charts_data.__len__()-chartColors.__len__()):
+                backgroundColors.append(chartColors[i])
+
+        week_dataset = {
+            'data': week_charts_data,
+            'backgroundColor': backgroundColors,
         }
         week_dic['datasets'].append(week_dataset)
 
         # print(json.dumps(status_dic))
-        return JsonResponse({'status_dic':status_dic,'user_dic':account_dic,'week_dic':week_dic},safe=False)
-
-
-
+        return JsonResponse({'status_dic': status_dic, 'user_dic': account_dic, 'week_dic': week_dic}, safe=False)
