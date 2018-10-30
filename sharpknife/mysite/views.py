@@ -6,6 +6,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import auth
+from django.db.models import Count
+from django.db.models.functions import TruncWeek
 
 # Create your views here.
 from .models import AppleAccountModel, AccountEventModel
@@ -229,6 +231,7 @@ class IndexView(BaseView):
     def get_charts_json(request):
         all_account = AppleAccountModel.objects.all().filter(used=True)
         has_upload = all_account.exclude(upload_date=None)
+        # 根据状态区分
         status_dic = {
             "labels":[],
             'datasets':[],
@@ -252,7 +255,7 @@ class IndexView(BaseView):
             'backgroundColor':backgroundColors,
         }
         status_dic['datasets'].append(upload_dataset)
-
+        # 根据用户区分
         account_dic = {
             "labels":[],
             'datasets':[],
@@ -277,8 +280,26 @@ class IndexView(BaseView):
         }
         account_dic['datasets'].append(account_dataset)
 
+        # 根据每周划分
+        week_data = has_upload.annotate(week=TruncWeek('upload_date')).values('week').annotate(c=Count('id')).order_by()
+        week_dic = {
+            'labels':[],
+            'datasets':[],
+        }
+        week_charts_data=[]
+        for item in week_data:
+            week_dic['labels'].append(item['week'].__str__())
+            week_charts_data.append(item['c'])
+        
+        backgroundColors = chartColors[:len(week_charts_data)]
+        week_dataset={
+            'data':week_charts_data,
+            'backgroundColor':backgroundColors,
+        }
+        week_dic['datasets'].append(week_dataset)
+
         # print(json.dumps(status_dic))
-        return JsonResponse({'status_dic':status_dic,'user_dic':account_dic},safe=False)
+        return JsonResponse({'status_dic':status_dic,'user_dic':account_dic,'week_dic':week_dic},safe=False)
 
 
 

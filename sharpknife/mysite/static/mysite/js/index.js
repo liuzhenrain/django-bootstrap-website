@@ -62,31 +62,74 @@ $(function () {
                             }
                         }]
                     },
-                    animation:{
-                        duration:500,
-                        onComplete:function(){
+                    animation: {
+                        duration: 500,
+                        onComplete: function () {
                             let charInstance = this.chart;
                             let ctx = charInstance.ctx
                             ctx.textAlign = 'center'
                             ctx.textBaseline = 'bottom';
-                            this.data.datasets.forEach(function(dataset,i){
+                            this.data.datasets.forEach(function (dataset, i) {
                                 let meta = charInstance.controller.getDatasetMeta(i)
-                                meta.data.forEach(function(bar,index){
+                                meta.data.forEach(function (bar, index) {
                                     let data = dataset.data[index]
-                                    ctx.fillText(data,bar._model.x,bar._model.y-5)
+                                    ctx.fillText(data, bar._model.x, bar._model.y - 5)
                                 })
                             })
                         }
                     }
                 }
             }
-            console.log(JSON.stringify(user_config))
-            console.log(JSON.stringify(data.user_dic.datasets.data))
             window.userChart = new Chart(user_ctx, user_config);
             window.userChart.update()
+            setWeekCharts(data.week_dic)
         }
     );
 })
+
+function setWeekCharts(data) {
+    let user_ctx = document.getElementById('week_chart').getContext('2d') // $('#account_status_chart').getContext('2d')
+    let user_config = {
+        type: 'bar',
+        data: {
+            datasets: [{
+                data: data.datasets[0].data,
+                backgroundColor: data.datasets[0].backgroundColor,
+                label: "每周提包",
+            }],
+            labels: data.labels,
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                    }
+                }]
+            },
+            animation: {
+                duration: 500,
+                onComplete: function () {
+                    let charInstance = this.chart;
+                    let ctx = charInstance.ctx
+                    ctx.textAlign = 'center'
+                    ctx.textBaseline = 'bottom';
+                    this.data.datasets.forEach(function (dataset, i) {
+                        let meta = charInstance.controller.getDatasetMeta(i)
+                        meta.data.forEach(function (bar, index) {
+                            let data = dataset.data[index]
+                            ctx.fillText(data, bar._model.x, bar._model.y - 5)
+                        })
+                    })
+                }
+            }
+        }
+    }
+    window.userChart = new Chart(user_ctx, user_config);
+    window.userChart.update()
+}
+
 
 function operateFormatter(value, row, index) {
     return [
