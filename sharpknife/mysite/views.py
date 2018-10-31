@@ -231,6 +231,7 @@ class IndexView(BaseView):
                     account.used = True
                     account.request_date = timezone.localdate()
                     account.user = request.user
+                    account.status = "ZZZZ"
                     account.save()
                     # print('localdate',timezone.localdate())
                     success = {
