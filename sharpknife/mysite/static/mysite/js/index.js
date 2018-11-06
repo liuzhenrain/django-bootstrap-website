@@ -28,6 +28,9 @@ $(function () {
         showRefresh: true,
         showColumns: true,
         search: true,
+        rowStyle:function(row,index){
+            return {classes: "mytr"}
+        },
         responseHandler: function (res) {
             console.log(res)
             return res['rows']
@@ -134,7 +137,7 @@ function setWeekCharts(data) {
 function operateFormatter(value, row, index) {
     return [
         "<a id='account_md' class='btn btn-default btn-sm' data-toggle='modal' data-target='#account_modify_modal'>",
-        "<i class='fa fa-edit fa-lg'></i></a> ",
+        "<i class='fa fa-edit fa-sm'></i></a> ",
 
     ].join('');
 }

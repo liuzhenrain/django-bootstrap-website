@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'mysite/css/index.css' %}">
+{% endblock head %}
+    
+
 {% block body %}
 
 <div class="container-fluid">
@@ -41,7 +47,7 @@
                         <th data-field="status" data-title="当前状态" data-align="center" data-sortable="false"></th>
                         <th data-field="user" data-title="使用者" data-align="center" data-sortable="false"></th>
                         {% if request.user.is_authenticated %}
-                        <th data-field="operate" data-title="" data-align="center" data-sortable="false" data-formatter="operateFormatter"
+                        <th data-field="operate" data-title="修改" data-align="center" data-sortable="false" data-formatter="operateFormatter"
                             data-events="operateEvents"></th>
                         {% endif %}
                     </tr>
