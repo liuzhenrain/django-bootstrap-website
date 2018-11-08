@@ -57,7 +57,7 @@ def person(request):
     else:
         accounts = AppleAccountModel.objects.filter(user_id=request.user.username).order_by('-upload_date')
     account_data = {}
-    account_data['labels']=["苹果帐号","帐号密码","邮箱密码","帐号类型","VPN","状态",'提交时间','处理方式','使用设备']
+    account_data['labels']=["苹果帐号","帐号密码","邮箱密码","游戏名称","帐号类型","VPN","状态",'提交时间','处理方式','使用设备']
     account_data['data']=[]
     for item in accounts:
         account_data['data'].append(item)

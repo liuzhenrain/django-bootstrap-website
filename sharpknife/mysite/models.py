@@ -71,7 +71,7 @@ class AccountEventModel(models.Model):
 
     event_mes = models.CharField(null=False, max_length=1000, verbose_name='事件')
     event_date = models.DateField(
-        verbose_name='时间发生时间', auto_now=True, auto_now_add=False)
+        verbose_name='事件发生时间', auto_now=True, auto_now_add=False)
     account = models.ForeignKey(
         AppleAccountModel, on_delete=models.CASCADE, related_name='apple_event')
     who_add = models.ForeignKey(User, related_name='apple_event_who', on_delete=models.CASCADE)
